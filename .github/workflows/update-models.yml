@@ -1,0 +1,98 @@
+name: Update Models CLI
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-update:
+    runs-on: ubuntu-latest
+    outputs:
+      updated: ${{ steps.check.outputs.updated }}
+      new_version: ${{ steps.check.outputs.new_version }}
+      current_version: ${{ steps.check.outputs.current_version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Check for updates
+        id: check
+        run: bash scripts/check-models-updates.sh
+        timeout-minutes: 30
+
+      - name: Check for changes
+        id: changes
+        if: steps.check.outputs.updated == 'true'
+        run: |
+          if git diff --quiet flake.nix; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create pull request
+        if: steps.check.outputs.updated == 'true' && steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEW_VERSION="${{ steps.check.outputs.new_version }}"
+          CURRENT_VERSION="${{ steps.check.outputs.current_version }}"
+          BRANCH="automated-update/models-${NEW_VERSION}"
+
+          git checkout -b "$BRANCH"
+          git add flake.nix flake.lock README.md
+          git commit -m "chore: update Models CLI to ${NEW_VERSION}"
+          git push -u origin "$BRANCH"
+
+          gh pr create \
+            --title "Update Models CLI to ${NEW_VERSION}" \
+            --body "## Automated Update
+
+          **Before:** ${CURRENT_VERSION}
+          **After:** ${NEW_VERSION}
+
+          ### Verification Checklist
+          - [x] Source hash updated
+          - [x] Cargo hash updated
+          - [x] Flake validation passed
+          - [x] Test build succeeded
+          - [ ] Manual review
+
+          [Release notes](https://github.com/arimxyer/models/releases/tag/v${NEW_VERSION})" \
+            --label "automated,dependencies"
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: /tmp/nix-build-*.log
+          retention-days: 7
+
+  cleanup-stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Close stale update PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr list --state open --label "automated" --json number,createdAt,headRefName \
+            --jq '.[] | select(
+              (.createdAt | fromdateiso8601) < (now - 2592000)
+              and (.headRefName | startswith("automated-update/"))
+            ) | .number' | while read -r pr_number; do
+              echo "Closing stale PR #$pr_number"
+              gh pr close "$pr_number" --delete-branch
+            done
