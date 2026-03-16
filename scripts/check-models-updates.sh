@@ -11,19 +11,23 @@ log() { echo -e "${GREEN}[INFO]${NC} $*"; }
 warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
 error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
-# Fetch latest release from GitHub API with retries
+# Fetch latest release from GitHub API with retries and HTTP status check
 fetch_latest_release() {
     local url="https://api.github.com/repos/arimxyer/models/releases/latest"
     local retry_delays=(2 4 8)
-    local response
+    local response http_code
 
     for delay in "${retry_delays[@]}"; do
-        response=$(curl -sL "$url") && break
-        warn "Request failed, retrying in ${delay}s..."
+        http_code=$(curl -sL -o /tmp/models-release.json -w "%{http_code}" "$url")
+        if [[ "$http_code" == "200" ]]; then
+            response=$(cat /tmp/models-release.json)
+            break
+        fi
+        warn "Request failed (HTTP $http_code), retrying in ${delay}s..."
         sleep "$delay"
     done
 
-    if [[ -z "$response" ]]; then
+    if [[ -z "${response:-}" ]]; then
         error "Failed to fetch release metadata after retries"
         exit 1
     fi
@@ -31,9 +35,9 @@ fetch_latest_release() {
     echo "$response"
 }
 
-# Get current version from flake.nix
+# Get current version from package.nix
 get_current_version() {
-    grep 'version = "' flake.nix | head -1 | sed 's/.*version = "\(.*\)".*/\1/'
+    grep 'version = "' package.nix | head -1 | sed 's/.*version = "\(.*\)".*/\1/'
 }
 
 # Compare semantic versions (returns 0 if $1 > $2)
@@ -85,12 +89,12 @@ main() {
 
     log "New source hash: $sri_hash"
 
-    # Update flake.nix
-    log "Updating flake.nix..."
-    sed -i "s/version = \"${current_version}\"/version = \"${new_version}\"/" flake.nix
-    sed -i "s|hash = \"sha256-[^\"]*\"|hash = \"${sri_hash}\"|" flake.nix
+    # Update package.nix
+    log "Updating package.nix..."
+    sed -i "s/version = \"${current_version}\"/version = \"${new_version}\"/" package.nix
+    sed -i "s|hash = \"sha256-[^\"]*\"|hash = \"${sri_hash}\"|" package.nix
     # Reset cargoHash to force recomputation
-    sed -i 's|cargoHash = "sha256-[^"]*"|cargoHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="|' flake.nix
+    sed -i 's|cargoHash = "sha256-[^"]*"|cargoHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="|' package.nix
 
     # Update flake.lock
     nix flake update 2>/dev/null || true
@@ -107,7 +111,7 @@ main() {
         exit 1
     fi
 
-    sed -i "s|cargoHash = \"sha256-[^\"]*\"|cargoHash = \"${cargo_hash}\"|" flake.nix
+    sed -i "s|cargoHash = \"sha256-[^\"]*\"|cargoHash = \"${cargo_hash}\"|" package.nix
 
     # Validate flake
     log "Validating flake..."
@@ -120,6 +124,14 @@ main() {
     log "Running test build (this may take a while)..."
     if ! nix build .#default --no-link 2>/dev/null; then
         error "Test build failed"
+        exit 1
+    fi
+
+    # Verify binary works
+    log "Verifying binary..."
+    nix build .#default
+    if ! ./result/bin/models --version >/dev/null 2>&1; then
+        error "Binary verification failed: models --version returned non-zero"
         exit 1
     fi
 

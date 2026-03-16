@@ -1,8 +1,8 @@
-name: Update Models CLI
+name: Check upstream Models CLI
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *'  # Daily at midnight UTC
   workflow_dispatch:
 
 permissions:
@@ -17,9 +17,11 @@ jobs:
       new_version: ${{ steps.check.outputs.new_version }}
       current_version: ${{ steps.check.outputs.current_version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/nix-installer-action@d96bc962e61b3049ce8128d03d57a1144fa96539
 
       - name: Configure git
         run: |
@@ -35,28 +37,42 @@ jobs:
         id: changes
         if: steps.check.outputs.updated == 'true'
         run: |
-          if git diff --quiet flake.nix; then
+          if git diff --quiet package.nix; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           else
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Close superseded PRs
+        if: steps.check.outputs.updated == 'true' && steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh pr list --state open --json number,headRefName \
+            --jq '.[] | select(.headRefName | startswith("update/models-")) | .number' \
+          | while read -r PR_NUM; do
+            echo "Closing superseded PR #${PR_NUM}"
+            gh pr close "$PR_NUM" --comment "Superseded by newer upstream release." --delete-branch || true
+          done
 
       - name: Create pull request
         if: steps.check.outputs.updated == 'true' && steps.changes.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           NEW_VERSION="${{ steps.check.outputs.new_version }}"
           CURRENT_VERSION="${{ steps.check.outputs.current_version }}"
-          BRANCH="automated-update/models-${NEW_VERSION}"
+          BRANCH="update/models-${NEW_VERSION}"
 
           git checkout -b "$BRANCH"
-          git add flake.nix flake.lock README.md
-          git commit -m "chore: update Models CLI to ${NEW_VERSION}"
+          git add package.nix flake.lock README.md
+          git commit -m "chore: update Models CLI to v${NEW_VERSION}"
           git push -u origin "$BRANCH"
 
           gh pr create \
-            --title "Update Models CLI to ${NEW_VERSION}" \
+            --title "chore: update Models CLI to v${NEW_VERSION}" \
             --body "## Automated Update
 
           **Before:** ${CURRENT_VERSION}
@@ -67,32 +83,15 @@ jobs:
           - [x] Cargo hash updated
           - [x] Flake validation passed
           - [x] Test build succeeded
+          - [x] Binary verification passed (models --version)
           - [ ] Manual review
 
-          [Release notes](https://github.com/arimxyer/models/releases/tag/v${NEW_VERSION})" \
-            --label "automated,dependencies"
+          [Release notes](https://github.com/arimxyer/models/releases/tag/v${NEW_VERSION})"
 
       - name: Upload build logs on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08  # v4
         with:
           name: build-logs
           path: /tmp/nix-build-*.log
           retention-days: 7
-
-  cleanup-stale:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Close stale update PRs
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr list --state open --label "automated" --json number,createdAt,headRefName \
-            --jq '.[] | select(
-              (.createdAt | fromdateiso8601) < (now - 2592000)
-              and (.headRefName | startswith("automated-update/"))
-            ) | .number' | while read -r pr_number; do
-              echo "Closing stale PR #$pr_number"
-              gh pr close "$pr_number" --delete-branch
-            done
