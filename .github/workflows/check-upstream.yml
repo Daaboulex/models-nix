@@ -66,6 +66,9 @@ jobs:
           CURRENT_VERSION="${{ steps.check.outputs.current_version }}"
           BRANCH="update/models-${NEW_VERSION}"
 
+          # Delete stale branch if it exists (from a previous failed run)
+          git push origin --delete "$BRANCH" 2>/dev/null || true
+
           git checkout -b "$BRANCH"
           git add package.nix flake.lock README.md
           git commit -m "chore: update Models CLI to v${NEW_VERSION}"
