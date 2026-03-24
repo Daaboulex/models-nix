@@ -1,0 +1,17 @@
+{
+  "package": "models",
+  "upstream": {
+    "type": "github-release",
+    "owner": "arimxyer",
+    "repo": "models"
+  },
+  "packageFile": "package.nix",
+  "hashes": [
+    "hash",
+    "cargoHash"
+  ],
+  "verify": {
+    "binary": "models",
+    "args": "--version"
+  }
+}
