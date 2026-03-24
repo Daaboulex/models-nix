@@ -103,7 +103,7 @@ case "$UPSTREAM_TYPE" in
   gitlab-tag)
     HOST=$(echo "$CONFIG" | jq -r '.upstream.host // "gitlab.com"')
     PROJECT=$(echo "$CONFIG" | jq -r '.upstream.project')
-    ENCODED=$(echo "$PROJECT" | sed 's|/|%2F|g')
+    ENCODED="${PROJECT//\//%2F}"
     LATEST_TAG=$(fetch_latest "curl -sfL 'https://$HOST/api/v4/projects/$ENCODED/repository/tags?per_page=1' | jq -r '.[0].name'") || {
       warn "Failed to fetch tags from $PROJECT"
       output "updated" "false"
@@ -131,7 +131,7 @@ case "$UPSTREAM_TYPE" in
   gitlab-commit)
     HOST=$(echo "$CONFIG" | jq -r '.upstream.host // "gitlab.com"')
     PROJECT=$(echo "$CONFIG" | jq -r '.upstream.project')
-    ENCODED=$(echo "$PROJECT" | sed 's|/|%2F|g')
+    ENCODED="${PROJECT//\//%2F}"
     BRANCH=$(echo "$CONFIG" | jq -r '.upstream.branch // "main"')
     LATEST_COMMIT=$(fetch_latest "curl -sfL 'https://$HOST/api/v4/projects/$ENCODED/repository/branches/$BRANCH' | jq -r '.commit.id'") || {
       warn "Failed to fetch from GitLab $PROJECT"
