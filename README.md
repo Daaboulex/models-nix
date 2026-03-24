@@ -4,7 +4,7 @@ Nix flake packaging for [Models](https://github.com/arimxyer/models) by [arimxye
 
 ![Rust](https://img.shields.io/badge/Rust-2021-blue)
 ![License MIT](https://img.shields.io/badge/License-MIT-green)
-![Version 0.10.2](https://img.shields.io/badge/Version-0.10.2-orange)
+![Version 0.10.2](https://img.shields.io/badge/Version-0.11.3-orange)
 ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS-yellow)
 
 ## Upstream
