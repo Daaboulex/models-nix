@@ -269,13 +269,18 @@ if [ -n "$VERIFY_BINARY" ]; then
 elif [ "$VERIFY_CHECK" = "elf" ]; then
   log "Step 3/4: ELF verification"
   nix build .#default
-  FOUND=$(find result/bin/ -type f -executable 2>/dev/null | head -1)
+  FOUND=$(find result/bin/ \( -type f -o -type l \) -executable 2>/dev/null | head -1)
   if [ -z "$FOUND" ]; then
     FOUND=$(find result/lib/ -name "*.so" 2>/dev/null | head -1)
   fi
   if [ -n "$FOUND" ]; then
     file "$FOUND" | grep -q ELF || { err "Not an ELF binary: $FOUND"; output "error_type" "verification-error"; exit 1; }
   fi
+elif [ "$VERIFY_CHECK" = "wrapper" ]; then
+  log "Step 3/4: Wrapper verification"
+  nix build .#default
+  FOUND=$(find result/bin/ \( -type f -o -type l \) 2>/dev/null | head -1)
+  [ -n "$FOUND" ] && [ -x "$FOUND" ] || { err "No executable wrapper found"; output "error_type" "verification-error"; exit 1; }
 elif [ "$VERIFY_CHECK" = "eval" ]; then
   log "Step 3/4: Eval verification (already passed in step 1)"
 elif [ "$VERIFY_CHECK" = "desktop" ]; then
