@@ -1,5 +1,7 @@
 # Models CLI (Nix)
 
+[![CI](https://github.com/Daaboulex/models-nix/actions/workflows/ci.yml/badge.svg)](https://github.com/Daaboulex/models-nix/actions/workflows/ci.yml)
+
 Nix flake packaging for [Models](https://github.com/arimxyer/models) by [arimxyer](https://github.com/arimxyer) — a fast TUI and CLI for browsing AI models, benchmarks, and coding agents.
 
 ![Rust](https://img.shields.io/badge/Rust-2021-blue)
