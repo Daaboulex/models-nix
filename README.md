@@ -1,6 +1,11 @@
 # Models CLI (Nix)
 
 [![CI](https://github.com/Daaboulex/models-nix/actions/workflows/ci.yml/badge.svg)](https://github.com/Daaboulex/models-nix/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/Daaboulex/models-nix)](./LICENSE)
+[![NixOS](https://img.shields.io/badge/NixOS-unstable-78C0E8?logo=nixos&logoColor=white)](https://nixos.org)
+[![Last commit](https://img.shields.io/github/last-commit/Daaboulex/models-nix)](https://github.com/Daaboulex/models-nix/commits)
+[![Stars](https://img.shields.io/github/stars/Daaboulex/models-nix?style=flat)](https://github.com/Daaboulex/models-nix/stargazers)
+[![Issues](https://img.shields.io/github/issues/Daaboulex/models-nix)](https://github.com/Daaboulex/models-nix/issues)
 
 Nix flake packaging for [Models](https://github.com/arimxyer/models) by [arimxyer](https://github.com/arimxyer) — a fast TUI and CLI for browsing AI models, benchmarks, and coding agents.
 
