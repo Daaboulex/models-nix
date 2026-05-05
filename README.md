@@ -67,6 +67,32 @@ nix build
 ./result/bin/models --version
 ```
 
+## Usage
+
+Launch the TUI:
+
+```bash
+models
+```
+
+Browse AI models, benchmarks, and coding agents across 85+ providers in an interactive terminal interface.
+
+### Keyboard shortcuts
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Switch between Models / Benchmarks / Agents tabs |
+| `/` | Search / filter |
+| `Enter` | View model details |
+| `q` | Quit |
+
+### CLI mode
+
+```bash
+models --list              # list all models (JSON)
+models --search "gpt-4"   # search by name
+models --version           # show version
+```
 ## Updates
 
 This repository uses automated daily checks via GitHub Actions to detect new upstream releases. When a new version is found:
