@@ -40,43 +40,22 @@ Models provides:
 <!-- BEGIN generated:installation -->
 ## Installation
 
-### NixOS (Flake)
-
-Add as a flake input and use the overlay:
+Add as a flake input:
 
 ```nix
 {
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    models-nix = {
-      url = "github:Daaboulex/models-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
-
-  outputs = { nixpkgs, models-nix, ... }: {
-    nixosConfigurations.myhost = nixpkgs.lib.nixosSystem {
-      modules = [{
-        nixpkgs.overlays = [ models-nix.overlays.default ];
-        environment.systemPackages = [ pkgs.models-cli ];
-      }];
-    };
+  inputs.models = {
+    url = "github:Daaboulex/models-nix";
+    inputs.nixpkgs.follows = "nixpkgs";
   };
 }
 ```
 
-### Direct Run
+Then add the overlay:
 
-```bash
-nix run github:Daaboulex/models-nix
+```nix
+nixpkgs.overlays = [ inputs.models.overlays.default ];
 ```
-
-### Profile Install
-
-```bash
-nix profile install github:Daaboulex/models-nix
-```
-
 <!-- END generated:installation -->
 
 ## Development
