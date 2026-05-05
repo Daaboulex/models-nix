@@ -1,11 +1,9 @@
 # Models CLI (Nix)
 
-[![CI](https://github.com/Daaboulex/models-nix/actions/workflows/ci.yml/badge.svg)](https://github.com/Daaboulex/models-nix/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/Daaboulex/models-nix)](./LICENSE)
-[![NixOS](https://img.shields.io/badge/NixOS-unstable-78C0E8?logo=nixos&logoColor=white)](https://nixos.org)
-[![Last commit](https://img.shields.io/github/last-commit/Daaboulex/models-nix)](https://github.com/Daaboulex/models-nix/commits)
-[![Stars](https://img.shields.io/github/stars/Daaboulex/models-nix?style=flat)](https://github.com/Daaboulex/models-nix/stargazers)
-[![Issues](https://img.shields.io/github/issues/Daaboulex/models-nix)](https://github.com/Daaboulex/models-nix/issues)
+<!-- BEGIN generated:badges -->
+[![NixOS unstable](https://img.shields.io/badge/NixOS-unstable-78C0E8?logo=nixos&logoColor=white)](https://nixos.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+<!-- END generated:badges -->
 
 Nix flake packaging for [Models](https://github.com/arimxyer/models) by [arimxyer](https://github.com/arimxyer) — a fast TUI and CLI for browsing AI models, benchmarks, and coding agents.
 
@@ -14,13 +12,15 @@ Nix flake packaging for [Models](https://github.com/arimxyer/models) by [arimxye
 ![Version 0.10.2](https://img.shields.io/badge/Version-0.10.2-orange)
 ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS-yellow)
 
+<!-- BEGIN generated:upstream -->
 ## Upstream
 
-This is a **Nix packaging wrapper** — not the original project. All credit for Models CLI goes to:
-
-- **Author**: [arimxyer](https://github.com/arimxyer)
-- **Repository**: [github.com/arimxyer/models](https://github.com/arimxyer/models)
-- **License**: [MIT](https://github.com/arimxyer/models/blob/main/LICENSE)
+| | |
+|---|---|
+| **Project** | [arimxyer/models](https://github.com/arimxyer/models) |
+| **License** | MIT |
+| **Tracked** | GitHub releases |
+<!-- END generated:upstream -->
 
 ## What Is This?
 
@@ -37,6 +37,7 @@ Models provides:
 - **Benchmarks Tab** — Compare performance across 15+ benchmarks
 - **Agents Tab** — Track AI coding assistants with version detection
 
+<!-- BEGIN generated:installation -->
 ## Installation
 
 ### NixOS (Flake)
@@ -76,6 +77,8 @@ nix run github:Daaboulex/models-nix
 nix profile install github:Daaboulex/models-nix
 ```
 
+<!-- END generated:installation -->
+
 ## Development
 
 ```bash
@@ -100,3 +103,9 @@ This repository uses automated daily checks via GitHub Actions to detect new ups
 This Nix packaging flake is provided as-is and carries no additional license terms.
 
 The upstream [Models](https://github.com/arimxyer/models) project by [arimxyer](https://github.com/arimxyer) is licensed under the **MIT License**. See the [upstream LICENSE file](https://github.com/arimxyer/models/blob/main/LICENSE) for full terms.
+
+<!-- BEGIN generated:footer -->
+---
+
+*Maintained as part of the [Daaboulex](https://github.com/Daaboulex) NixOS ecosystem.*
+<!-- END generated:footer -->
