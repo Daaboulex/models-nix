@@ -16,6 +16,7 @@ Nix flake packaging for [Models](https://github.com/arimxyer/models) by [arimxye
 | **Project** | [arimxyer/models](https://github.com/arimxyer/models) |
 | **License** | MIT |
 | **Tracked** | GitHub releases |
+
 <!-- END generated:upstream -->
 
 ## What Is This?
@@ -24,8 +25,8 @@ A Nix flake that builds [Models](https://github.com/arimxyer/models) from source
 
 - **Package integrity** — SRI hashes for source and cargo dependencies, verified on every build
 - **CI security** — pinned GitHub Actions (full SHA, not tags), minimal permissions, build-gated PRs
-- **Upstream trust** — daily automated version detection, hash recomputation, and test build before PR creation
-- **Stale cleanup** — auto-close update PRs open >14 days, delete orphaned branches
+- **Upstream trust** — daily automated version detection, hash recomputation, and a verified test build, auto-committed to `main`
+- **Stale cleanup** — weekly `flake.lock` refresh (pushed only if it still builds); orphaned update branches older than 30 days are deleted
 
 Models provides:
 
@@ -52,6 +53,7 @@ Then add the overlay:
 ```nix
 nixpkgs.overlays = [ inputs.models.overlays.default ];
 ```
+
 <!-- END generated:installation -->
 
 ## Development
@@ -89,15 +91,18 @@ models --list              # list all models (JSON)
 models --search "gpt-4"   # search by name
 models --version           # show version
 ```
+
 ## Updates
 
 This repository uses automated daily checks via GitHub Actions to detect new upstream releases. When a new version is found:
 
 1. Source hash is recomputed from the release tarball
 2. Cargo dependency hash is recomputed via build error extraction
-3. Flake validation and test build must pass
-4. A pull request is created with full verification checklist
-5. Stale PRs (>14 days) are auto-closed; orphaned branches are deleted
+3. The flake is evaluated and the package is built and verified (`models --version`)
+4. On success, the bump is committed and pushed to `main`
+5. On failure, an `update-failed` issue is opened with the build log and a recovery branch
+
+Weekly maintenance refreshes `flake.lock` (pushing only if the result still builds) and deletes orphaned update branches older than 30 days.
 
 ## License
 
