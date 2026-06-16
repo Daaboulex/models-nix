@@ -13,5 +13,16 @@
   "verify": {
     "binary": "models",
     "args": "--version"
-  }
+  },
+  "description": "Models packaged for NixOS - TUI and CLI for browsing AI models, benchmarks, and coding agents",
+  "topics": [
+    "nix",
+    "nixos",
+    "flake",
+    "models",
+    "ai-models",
+    "tui",
+    "cli",
+    "rust"
+  ]
 }
