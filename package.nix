@@ -5,7 +5,7 @@
 }:
 
 let
-  version = "0.12.1";
+  version = "0.12.3";
 in
 rustPlatform.buildRustPackage {
   pname = "models";
@@ -15,10 +15,10 @@ rustPlatform.buildRustPackage {
     owner = "arimxyer";
     repo = "models";
     rev = "v${version}";
-    hash = "sha256-p1GXQhqeQUk+OuyfdP2ftCkfQJuAqt+DHlCN2sWNNfY=";
+    hash = "sha256-MlklSOkRmg4uNsFGluiJYo7nPoVs0R2ixTwFMUuNdLk=";
   };
 
-  cargoHash = "sha256-3fnb3hwUBK1LkjY1JsuSzswBpP81IYXd/tXMYVXMCv4=";
+  cargoHash = "sha256-0BIOPwTlX8wPcI38x5eOyY4bPBfkgNChm1thqLEND5c=";
 
   meta = with lib; {
     description = "TUI and CLI for browsing AI models, benchmarks, and coding agents";
