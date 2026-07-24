@@ -37,7 +37,7 @@
         };
 
       flake.overlays.default = final: _prev: {
-        models-cli = inputs.self.packages.${final.system}.default;
+        models-cli = inputs.self.packages.${final.stdenv.hostPlatform.system}.default;
       };
     };
 }
