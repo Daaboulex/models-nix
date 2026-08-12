@@ -106,7 +106,7 @@ Weekly maintenance refreshes `flake.lock` (pushing only if the result still buil
 
 ## License
 
-This Nix packaging flake is provided as-is and carries no additional license terms.
+This packaging flake is [MIT](./LICENSE) licensed. Upstream [models](https://github.com/arimxyer/models) is MIT.
 
 The upstream [Models](https://github.com/arimxyer/models) project by [arimxyer](https://github.com/arimxyer) is licensed under the **MIT License**. See the [upstream LICENSE file](https://github.com/arimxyer/models/blob/main/LICENSE) for full terms.
 
