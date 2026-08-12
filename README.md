@@ -111,7 +111,4 @@ This Nix packaging flake is provided as-is and carries no additional license ter
 The upstream [Models](https://github.com/arimxyer/models) project by [arimxyer](https://github.com/arimxyer) is licensed under the **MIT License**. See the [upstream LICENSE file](https://github.com/arimxyer/models/blob/main/LICENSE) for full terms.
 
 <!-- BEGIN generated:footer -->
----
-
-*Maintained as part of the [Daaboulex](https://github.com/Daaboulex) NixOS ecosystem.*
 <!-- END generated:footer -->
