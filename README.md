@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 <!-- END generated:badges -->
 
-Nix flake packaging for [Models](https://github.com/arimxyer/models) by [arimxyer](https://github.com/arimxyer) — a fast TUI and CLI for browsing AI models, benchmarks, and coding agents.
+Nix flake packaging for [Models](https://github.com/arimxyer/models) by [arimxyer](https://github.com/arimxyer), a TUI and CLI for browsing AI models, benchmarks, and coding agents.
 
 <!-- BEGIN generated:upstream -->
 ## Upstream
@@ -21,18 +21,13 @@ Nix flake packaging for [Models](https://github.com/arimxyer/models) by [arimxye
 
 ## What Is This?
 
-A Nix flake that builds [Models](https://github.com/arimxyer/models) from source with Level C security:
-
-- **Package integrity** — SRI hashes for source and cargo dependencies, verified on every build
-- **CI security** — pinned GitHub Actions (full SHA, not tags), minimal permissions, build-gated PRs
-- **Upstream trust** — daily automated version detection, hash recomputation, and a verified test build, auto-committed to `main`
-- **Stale cleanup** — weekly `flake.lock` refresh (pushed only if it still builds); orphaned update branches older than 30 days are deleted
+A Nix flake that builds [Models](https://github.com/arimxyer/models) from source.
 
 Models provides:
 
-- **Models Tab** — Browse 3,000+ AI models across 85+ providers
-- **Benchmarks Tab** — Compare performance across 15+ benchmarks
-- **Agents Tab** — Track AI coding assistants with version detection
+- **Models Tab.** Browse AI models across providers
+- **Benchmarks Tab.** Compare performance across benchmarks
+- **Agents Tab.** Track AI coding assistants with version detection
 
 <!-- BEGIN generated:installation -->
 ## Installation
@@ -73,7 +68,7 @@ Launch the TUI:
 models
 ```
 
-Browse AI models, benchmarks, and coding agents across 85+ providers in an interactive terminal interface.
+Browse AI models, benchmarks, and coding agents in an interactive terminal interface.
 
 ### Keyboard shortcuts
 
@@ -87,8 +82,8 @@ Browse AI models, benchmarks, and coding agents across 85+ providers in an inter
 ### CLI mode
 
 ```bash
-models --list              # list all models (JSON)
-models --search "gpt-4"   # search by name
+models list                # list all models
+models search "gpt-4"     # search by name
 models --version           # show version
 ```
 
@@ -102,7 +97,7 @@ This repository uses automated daily checks via GitHub Actions to detect new ups
 4. On success, the bump is committed and pushed to `main`
 5. On failure, an `update-failed` issue is opened with the build log and a recovery branch
 
-Weekly maintenance refreshes `flake.lock` (pushing only if the result still builds) and deletes orphaned update branches older than 30 days.
+Weekly maintenance refreshes [flake.lock](./flake.lock) (pushing only if the result still builds) and deletes orphaned update branches older than 30 days.
 
 ## License
 
