@@ -1,38 +1,17 @@
 # Models CLI (Nix)
 
-<!-- BEGIN generated:badges -->
-[![CI](https://github.com/Daaboulex/models-nix/actions/workflows/ci.yml/badge.svg)](https://github.com/Daaboulex/models-nix/actions/workflows/ci.yml)
-[![NixOS unstable](https://img.shields.io/badge/NixOS-unstable-78C0E8?logo=nixos&logoColor=white)](https://nixos.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-<!-- END generated:badges -->
+Nix flake packaging for [Models](https://github.com/arimxyer/models) by
+[arimxyer](https://github.com/arimxyer), a TUI and CLI for browsing AI models,
+benchmarks, and coding agents. The flake builds Models from source and offers
+it as a package and as an overlay.
 
-Nix flake packaging for [Models](https://github.com/arimxyer/models) by [arimxyer](https://github.com/arimxyer), a TUI and CLI for browsing AI models, benchmarks, and coding agents.
+It is declared for `x86_64-linux` and `aarch64-linux`. The flake's own check
+runs `models --version` and nothing more, so the interface and the subcommands
+are not tested here.
 
-<!-- BEGIN generated:upstream -->
-## Upstream
+## Install
 
-| | |
-|---|---|
-| **Project** | [arimxyer/models](https://github.com/arimxyer/models) |
-| **License** | MIT |
-| **Tracked** | GitHub releases |
-
-<!-- END generated:upstream -->
-
-## What Is This?
-
-A Nix flake that builds [Models](https://github.com/arimxyer/models) from source.
-
-Models provides:
-
-- **Models Tab.** Browse AI models across providers
-- **Benchmarks Tab.** Compare performance across benchmarks
-- **Agents Tab.** Track AI coding assistants with version detection
-
-<!-- BEGIN generated:installation -->
-## Installation
-
-Add as a flake input:
+Add the flake:
 
 ```nix
 {
@@ -43,24 +22,23 @@ Add as a flake input:
 }
 ```
 
-Then add the overlay:
+Then add the overlay and install the package. The overlay names the package
+`models-cli`. The program it installs is `models`.
 
 ```nix
-nixpkgs.overlays = [ inputs.models.overlays.default ];
+{
+  nixpkgs.overlays = [ inputs.models.overlays.default ];
+  environment.systemPackages = [ pkgs.models-cli ];
+}
 ```
 
-<!-- END generated:installation -->
-
-## Development
+To run it once without installing:
 
 ```bash
-git clone https://github.com/Daaboulex/models-nix
-cd models-nix
-nix build
-./result/bin/models --version
+nix run github:Daaboulex/models-nix
 ```
 
-## Usage
+## Use
 
 Launch the TUI:
 
@@ -68,42 +46,39 @@ Launch the TUI:
 models
 ```
 
-Browse AI models, benchmarks, and coding agents in an interactive terminal interface.
+Browse AI models, benchmarks, and coding agents in an interactive terminal
+interface. It has three tabs.
 
-### Keyboard shortcuts
+| Tab | What it is for |
+|---|---|
+| Models | Browse AI models across providers |
+| Benchmarks | Compare performance across benchmarks |
+| Agents | Track AI coding assistants with version detection |
+
+Keyboard shortcuts:
 
 | Key | Action |
-|-----|--------|
-| `Tab` | Switch between Models / Benchmarks / Agents tabs |
-| `/` | Search / filter |
+|---|---|
+| `Tab` | Switch between the Models, Benchmarks and Agents tabs |
+| `/` | Search or filter |
 | `Enter` | View model details |
 | `q` | Quit |
 
-### CLI mode
+CLI mode, without the interface:
 
-```bash
-models list                # list all models
-models search "gpt-4"     # search by name
-models --version           # show version
-```
+| Command | What it does |
+|---|---|
+| `models list` | List all models |
+| `models search "gpt-4"` | Search by name |
+| `models --version` | Show the version |
 
-## Updates
+## More
 
-This repository uses automated daily checks via GitHub Actions to detect new upstream releases. When a new version is found:
-
-1. Source hash is recomputed from the release tarball
-2. Cargo dependency hash is recomputed via build error extraction
-3. The flake is evaluated and the package is built and verified (`models --version`)
-4. On success, the bump is committed and pushed to `main`
-5. On failure, an `update-failed` issue is opened with the build log and a recovery branch
-
-Weekly maintenance refreshes [flake.lock](./flake.lock) (pushing only if the result still builds) and deletes orphaned update branches older than 30 days.
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md): building from a clone, the
+  check, how new upstream releases and the lock file are picked up
 
 ## License
 
 This packaging flake is [MIT](./LICENSE) licensed. Upstream [models](https://github.com/arimxyer/models) is MIT.
 
 The upstream [Models](https://github.com/arimxyer/models) project by [arimxyer](https://github.com/arimxyer) is licensed under the **MIT License**. See the [upstream LICENSE file](https://github.com/arimxyer/models/blob/main/LICENSE) for full terms.
-
-<!-- BEGIN generated:footer -->
-<!-- END generated:footer -->
